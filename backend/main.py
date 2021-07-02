@@ -1,0 +1,11 @@
+import flask
+from flask_sqlalchemy import SQLAlchemy
+
+
+def create_app():
+    app = flask.Flask(__name__)
+
+    from .views import main
+    app.register_blueprint(main)
+
+    return app

@@ -1,0 +1,140 @@
+.App {
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.Predict_Page {
+}
+
+.input-field {
+  display: block;
+  outline: none;
+  background: none;
+  background-color: #eee;
+  border-radius: 8px;
+  color: #53565a;
+  font-size: 20px;
+  font-weight: 300px;
+  transition: 0.4s ease-out;
+}
+
+nav {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  min-height: 10vh;
+  background-color: black;
+  color: white;
+}
+
+.Nav-links {
+  width: 40%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  list-style: none;
+}
+
+.Phase-Heading {
+  text-align: left;
+  margin-top: 200px;
+  margin-bottom: 20px;
+  margin-left: 50px;
+}
+
+.Description-Text {
+  text-align: left;
+  margin-left: 50px;
+}
+
+.Image {
+  float: right;
+  height: 300px;
+  margin-right: 50px;
+}
+
+.Image1 {
+  float: right;
+  height: 200px;
+  width: 500px;
+  margin-right: 100px;
+}
+
+.Image2 {
+  float: right;
+  height: 300px;
+  margin-right: 100px;
+}
+
+.Image3 {
+  float: right;
+  height: 300px;
+  width: 350px;
+  margin-right: 20px;
+}
+
+.box {
+}
+
+.box select {
+  background-color: #0563af;
+  color: white;
+  border: none;
+  font-size: 20px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+  -webkit-appearance: button;
+  appearance: button;
+  outline: none;
+}
+
+.box::before {
+  font-family: FontAwesome;
+  height: 100%;
+  font-size: 28px;
+  line-height: 45px;
+  color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.1);
+  pointer-events: none;
+}
+
+.box:hover::before {
+  color: rgba(255, 255, 255, 0.6);
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.container {
+  display: flex;
+  justify-content: space-around;
+}
+
+.predict_button {
+  display: flex;
+  padding: 15px 30px;
+  font-size: 18px;
+  font-weight: 700;
+  position: relative;
+  background-color: #0563af;
+  color: #fff;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  appearance: none;
+  cursor: pointer;
+  transition: 0.4s ease-out;
+}
+
+.predict_button:hover {
+  background: #0563af;
+  color: black;
+}
+
+.Phase-Ending {
+  text-align: left;
+  margin-top: 20px;
+  margin-bottom: 100px;
+}
+
+.Predict-Heading {
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
