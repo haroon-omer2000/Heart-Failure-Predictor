@@ -16,6 +16,8 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn import metrics
+from sklearn.decomposition import PCA
+import random
 
 
 class Controller_Class:
@@ -47,7 +49,6 @@ class Controller_Class:
         best_features_obj.fit_transform(self.X[numerical_features], self.Y)
         best_numeric_features = list(
             compress(numerical_features, list(best_features_obj.get_support())))
-        # print('Best Numerical Features:\n {}'.format(best_numeric_features))
 
         # Chi Square (Categorical Columns)
         chi_max_cols = 2
@@ -57,7 +58,6 @@ class Controller_Class:
         best_features_obj.fit_transform(self.X[categorical_features], self.Y)
         best_categoric_features = list(
             compress(categorical_features, list(best_features_obj.get_support())))
-        # print('Best Categorical Features:\n {}'.format(best_categoric_features))
 
         best_features = list()
         best_features.extend(best_numeric_features)
@@ -87,6 +87,24 @@ class Controller_Class:
             'Features'].values
         best_data_set = self.heart_data[best_features]
         return best_data_set
+
+    def get_pca_features(self):
+        pca_obj = PCA(n_components=6, random_state=10)
+        x_new = self.heart_data.loc[len(self.heart_data)-1, :]
+        x_new = np.array(x_new[0:-1])
+        self.heart_data.drop(labels=len(
+            self.heart_data) - 1, axis=0, inplace=True)
+        pca_obj.fit(self.heart_data.iloc[:, 0:-1])
+        reduced_features = pca_obj.transform(self.heart_data.iloc[:, 0:-1])
+        column_list = []
+        for i in range(reduced_features.shape[1]):
+            column_list.append('PC'+str(i+1))
+
+        reduced_features = pd.DataFrame(reduced_features, columns=column_list)
+
+        x_new = pca_obj.transform(x_new.reshape(1, -1))
+        x_new = x_new[0]
+        return reduced_features, x_new
 
     def check_feature_selection_technique(self, details):
         best_data_set = None
@@ -144,7 +162,6 @@ class Controller_Class:
             neigh.fit(x_train, y_train)
             predicted_value = neigh.predict([x_new])
 
-            print(test_set_accuracies)
             return best_k, round(predicted_value[0], 2), test_set_accuracies[best_k-1]
 
     def calc_NaiveBayes(self, x_train, y_train, x_test, y_test, x_new):
@@ -162,32 +179,41 @@ class Controller_Class:
                  float(details['cpk']), float(details['gender_var']), float(details['smoking_var']), float(details['diabetes_var']), float(details['anamia_var']), float(details['bp_var'])]
         self.heart_data = self.heart_data.append({'TIME': x_new[0], 'Age': x_new[1], 'Ejection.Fraction': x_new[2], 'Sodium': x_new[3], 'Creatinine': x_new[4], 'Pletelets': x_new[5],
                                                   'CPK': x_new[6], 'Gender': x_new[7], 'Smoking': x_new[8], 'Diabetes': x_new[9], 'Anaemia': x_new[10], 'BP': x_new[11]}, ignore_index=True)
+        best_data_set = None
 
         # checking normalize condition
         if(details['normalize_var'] == 'true'):
             self.heart_data = self.min_max_normalize()
 
-        x_new = self.heart_data.loc[len(self.heart_data)-1, :]
-        self.heart_data.drop(labels=len(self.heart_data) -
-                             1, axis=0, inplace=True)
+        if(details['feature_technique_var'] == 'pca'):
+            best_data_set, x_new = self.get_pca_features()
+            self.Y = self.heart_data['Event']
+            x_train, x_test, y_train, y_test = train_test_split(
+                best_data_set, self.Y, test_size=0.3, random_state=1)
 
-        # separating features and labels
-        self.X, self.Y = self.heart_data.iloc[:, :-1], self.heart_data['Event']
+        else:
+            x_new = self.heart_data.loc[len(self.heart_data)-1, :]
+            self.heart_data.drop(labels=len(self.heart_data) -
+                                 1, axis=0, inplace=True)
 
-        # checking feature subset selection method
-        best_data_set = self.check_feature_selection_technique(details)
+            # separating features and labels
+            self.X, self.Y = self.heart_data.iloc[:,
+                                                  :-1], self.heart_data['Event']
 
-        # performing train test split
-        x_train, x_test, y_train, y_test = train_test_split(
-            best_data_set, self.Y, test_size=0.3, random_state=1)
+            # checking feature subset selection method
+            best_data_set = self.check_feature_selection_technique(details)
 
-        x_new = x_new[x_train.columns.to_list()]
+            # performing train test split
+            x_train, x_test, y_train, y_test = train_test_split(
+                best_data_set, self.Y, test_size=0.3, random_state=1)
+
+            x_new = x_new[x_train.columns.to_list()]
 
         # checking which classifier to use
         if(details['classifier_var'] == 'K-Nearest Neighbours'):
             k_ranges = None
             if(details['kvalue_var'] == 'best'):
-                k_ranges = [i for i in range(1, 10)]
+                k_ranges = [i for i in range(1, 10, 2)]
             else:
                 k_ranges = details['kvalue_var']
             best_k, predicted_value, accuracy = self.calc_KNN(
