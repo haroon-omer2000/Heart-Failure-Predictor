@@ -147,6 +147,7 @@ function Predict() {
             <option  value="filter" >Filter</option>
             <option  value="wrapper"  >Wrapper</option>
             <option  value="hybrid" >Hybrid</option>
+            <option  value="pca" >PCA</option>
           </select>
       </div>
 
@@ -163,15 +164,10 @@ function Predict() {
               <label  >Select Value of K: </label>   
               <select id="select_k" onChange={updateKValue}>
               <option  value="1"  >1</option>
-              <option  value="2"  >2</option>
               <option  value="3"  >3</option>
-              <option  value="4"  >4</option>
               <option  value="5"  >5</option>
-              <option  value="6"  >6</option>
               <option  value="7"  >7</option>
-              <option  value="8"  >8</option>
               <option  value="9"  >9</option>
-              <option  value="10"  >10</option>
               <option  value="best">Best K (Recommended)</option>
             </select>
             </div>
@@ -322,7 +318,7 @@ function Predict() {
       {(status!=='')?
         <div>
           <h3 className="Predict-Heading">Patient Status: {status}</h3>
-          <h3>Calculated with accuracy: {accuracy}</h3>
+          <h3>Calculated with accuracy: {accuracy*100} %</h3>
         </div>
         :false
       } 
