@@ -307,9 +307,9 @@ function Predict() {
 
                             setAccuracy(data['accuracy']);
                             if(data['predicted_value']){
-                              setStatus('Alive');
-                            }else{
                               setStatus('Dead');
+                            }else{
+                              setStatus('Alive');
                             }                                                      
                         }));
 
